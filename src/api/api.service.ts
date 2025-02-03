@@ -71,7 +71,6 @@ export class ApiService {
         properties.push('armstrong');
       }
 
-      // Even/Odd check for non-zero numbers
       if (num !== 0) {
         properties.push(absNum % 2 === 0 ? 'even' : 'odd');
       }

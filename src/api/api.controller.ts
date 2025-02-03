@@ -14,10 +14,8 @@ export class ApiController {
   @Get('classify-number')
   async classifyNumber(@Query('number') numberStr: string) {
     try {
-      // Validate the input string using a regular expression
       const isValidInteger = /^-?\d+$/.test(numberStr);
 
-      // If the input is not a valid integer (including negative integers), return an error
       if (!isValidInteger) {
         return {
           number: numberStr,
@@ -25,10 +23,8 @@ export class ApiController {
         };
       }
 
-      // Parse the validated string into a number
       const number = parseInt(numberStr, 10);
 
-      // Pass the validated number to the service
       return this.apiService.analyzeNumber(number);
     } catch {
       throw new HttpException(
