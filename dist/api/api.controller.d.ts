@@ -1,7 +1,9 @@
 import { ApiService } from './api.service';
-import { NumberResponse } from './dto/api.dto';
 export declare class ApiController {
     private readonly apiService;
     constructor(apiService: ApiService);
-    getNumberInfo(numberStr: string): Promise<NumberResponse>;
+    classifyNumber(numberStr: string): Promise<import("./dto/api.dto").SuccessResponse | import("./dto/api.dto").ErrorResponse | {
+        number: string;
+        error: boolean;
+    }>;
 }

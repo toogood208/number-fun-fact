@@ -1,7 +1,7 @@
+import { HttpService } from '@nestjs/axios';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ErrorResponse, NumberResponse, SuccessResponse } from './dto/api.dto';
 import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ApiService {
@@ -9,8 +9,8 @@ export class ApiService {
 
   async analyzeNumber(num: number): Promise<NumberResponse> {
     try {
-      // Validate input range
-      if (num < 0 || num > Number.MAX_SAFE_INTEGER) {
+      // Only check for MAX_SAFE_INTEGER
+      if (Math.abs(num) > Number.MAX_SAFE_INTEGER) {
         return {
           number: num,
           error: true,
@@ -41,9 +41,11 @@ export class ApiService {
 
   private isPrime(num: number): boolean {
     try {
-      if (num <= 1) return false;
-      for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) return false;
+      // Handle negative numbers
+      const absNum = Math.abs(num);
+      if (absNum <= 1) return false;
+      for (let i = 2; i <= Math.sqrt(absNum); i++) {
+        if (absNum % i === 0) return false;
       }
       return true;
     } catch {
@@ -53,7 +55,7 @@ export class ApiService {
 
   private isPerfect(num: number): boolean {
     try {
-      const sqrt = Math.sqrt(num);
+      const sqrt = Math.sqrt(Math.abs(num));
       return sqrt === Math.floor(sqrt);
     } catch {
       return false;
@@ -63,11 +65,15 @@ export class ApiService {
   private async getNumberProperties(num: number): Promise<string[]> {
     try {
       const properties: string[] = [];
+      const absNum = Math.abs(num);
 
-      properties.push(num % 2 === 0 ? 'even' : 'odd');
-
-      if (this.isArmstrong(num)) {
+      if (num >= 0 && this.isArmstrong(absNum)) {
         properties.push('armstrong');
+      }
+
+      // Even/Odd check for non-zero numbers
+      if (num !== 0) {
+        properties.push(absNum % 2 === 0 ? 'even' : 'odd');
       }
 
       return properties;
@@ -92,7 +98,8 @@ export class ApiService {
 
   private getDigitSum(num: number): number {
     try {
-      return num
+      // Handle negative numbers by using absolute value
+      return Math.abs(num)
         .toString()
         .split('')
         .reduce((sum, digit) => sum + parseInt(digit), 0);

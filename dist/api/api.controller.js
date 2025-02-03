@@ -19,15 +19,16 @@ let ApiController = class ApiController {
     constructor(apiService) {
         this.apiService = apiService;
     }
-    async getNumberInfo(numberStr) {
+    async classifyNumber(numberStr) {
         try {
-            const number = parseInt(numberStr);
-            if (isNaN(number)) {
+            const isValidInteger = /^-?\d+$/.test(numberStr);
+            if (!isValidInteger) {
                 return {
                     number: numberStr,
                     error: true,
                 };
             }
+            const number = parseInt(numberStr, 10);
             return this.apiService.analyzeNumber(number);
         }
         catch {
@@ -45,7 +46,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], ApiController.prototype, "getNumberInfo", null);
+], ApiController.prototype, "classifyNumber", null);
 exports.ApiController = ApiController = __decorate([
     (0, common_1.Controller)('api'),
     __metadata("design:paramtypes", [api_service_1.ApiService])

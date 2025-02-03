@@ -1,5 +1,5 @@
-import { NumberResponse } from './dto/api.dto';
 import { HttpService } from '@nestjs/axios';
+import { NumberResponse } from './dto/api.dto';
 export declare class ApiService {
     private readonly httpService;
     constructor(httpService: HttpService);

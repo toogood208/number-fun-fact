@@ -10,16 +10,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ApiService = void 0;
+const axios_1 = require("@nestjs/axios");
 const common_1 = require("@nestjs/common");
 const rxjs_1 = require("rxjs");
-const axios_1 = require("@nestjs/axios");
 let ApiService = class ApiService {
     constructor(httpService) {
         this.httpService = httpService;
     }
     async analyzeNumber(num) {
         try {
-            if (num < 0 || num > Number.MAX_SAFE_INTEGER) {
+            if (Math.abs(num) > Number.MAX_SAFE_INTEGER) {
                 return {
                     number: num,
                     error: true,
@@ -45,10 +45,11 @@ let ApiService = class ApiService {
     }
     isPrime(num) {
         try {
-            if (num <= 1)
+            const absNum = Math.abs(num);
+            if (absNum <= 1)
                 return false;
-            for (let i = 2; i <= Math.sqrt(num); i++) {
-                if (num % i === 0)
+            for (let i = 2; i <= Math.sqrt(absNum); i++) {
+                if (absNum % i === 0)
                     return false;
             }
             return true;
@@ -59,7 +60,7 @@ let ApiService = class ApiService {
     }
     isPerfect(num) {
         try {
-            const sqrt = Math.sqrt(num);
+            const sqrt = Math.sqrt(Math.abs(num));
             return sqrt === Math.floor(sqrt);
         }
         catch {
@@ -69,9 +70,12 @@ let ApiService = class ApiService {
     async getNumberProperties(num) {
         try {
             const properties = [];
-            properties.push(num % 2 === 0 ? 'even' : 'odd');
-            if (this.isArmstrong(num)) {
+            const absNum = Math.abs(num);
+            if (num >= 0 && this.isArmstrong(absNum)) {
                 properties.push('armstrong');
+            }
+            if (num !== 0) {
+                properties.push(absNum % 2 === 0 ? 'even' : 'odd');
             }
             return properties;
         }
@@ -92,7 +96,7 @@ let ApiService = class ApiService {
     }
     getDigitSum(num) {
         try {
-            return num
+            return Math.abs(num)
                 .toString()
                 .split('')
                 .reduce((sum, digit) => sum + parseInt(digit), 0);
